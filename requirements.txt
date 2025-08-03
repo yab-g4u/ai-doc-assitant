@@ -2,9 +2,9 @@ streamlit
 langchain
 faiss-cpu
 pypdf
+pdfminer.six
 python-docx
+unstructured
+sentence-transformers
 python-dotenv
 requests
-sentence-transformers
-unstructured
-pdfminer.six
