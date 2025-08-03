@@ -11,6 +11,9 @@ from src.gemini_llm import generate_gemini_response
 from langchain.vectorstores import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.chains import ConversationalRetrievalChain
+import logging
+logging.basicConfig(level=logging.INFO)
+logging.info("App starting...")
 
 st.set_page_config(page_title="AI Doc Assistant", layout="wide")
 st.title("🧠 Chat With Your Document (Gemini LLM)")
