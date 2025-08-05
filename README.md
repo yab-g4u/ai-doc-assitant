@@ -13,13 +13,20 @@ The core idea:
 We used **Langchain**, **Streamlit**, and **FAISS** to build a simple app where users can upload documents (like PDFs) and interact with them through a conversational interface.
 
 ---
+🔗 **Check it out live:** [Open App on Streamlit](https://ai-doc-assitant.streamlit.app/ )
 
-## 🎯 Objectives of the Task
+## 💡 Project Objective
 
-- Understand how document loading works using Langchain loaders  
-- Create embeddings for documents and store them in a vector database (FAISS)  
-- Use a language model (Gemini) to answer user questions based on document context  
-- Build a clean chat interface using Streamlit  
+Build an AI Assistant that:
+
+- 📄 Lets a user **upload a document** (PDF, TXT, etc.)
+- 💬 Provides a **chat interface** where the user can ask questions about the uploaded document
+- 🧠 Uses **LangChain**, **embeddings**, and **LLMs** to retrieve and respond with relevant document chunks
+- 🔁 Maintains **short-term memory** of the conversation for more coherent interactions
+- 💾 Optionally, includes functionality to **save chat history** based on session ID
+
+
+
 
 ---
 
@@ -49,7 +56,7 @@ We used **Langchain**, **Streamlit**, and **FAISS** to build a simple app where 
 3. **Create a .env file**
 Fill in your keys:
     ```bash
-GEMINI_API_KEY = your_key_here
+   GEMINI_API_KEY = your_key_here
 4. **Run the app**
      ```bash
-streamlit run app.py
+     streamlit run app.py
