@@ -13,7 +13,7 @@ The core idea:
 We used **Langchain**, **Streamlit**, and **FAISS** to build a simple app where users can upload documents (like PDFs) and interact with them through a conversational interface.
 
 ---
-🔗 **Check it out live:** [Open App on Streamlit]((https://ai-doc-assitant.streamlit.app/ ))
+🔗 **Check it out live:** [Open App on Streamlit](https://ai-doc-assitant.streamlit.app/ )
 
 ## 🎯 Objectives of the Task
 
