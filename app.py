@@ -16,17 +16,36 @@ logging.info("App starting..")
 # Streamlit app for AI Document Assistant    
 st.set_page_config(page_title="AI Doc Assistant", layout="wide", initial_sidebar_state="expanded")
 
+# --- Directories ---
+UPLOAD_DIR = "data/uploads"
+INDEX_DIR = "data/indexes"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+os.makedirs(INDEX_DIR, exist_ok=True)
+
 # --- SIDEBAR ---
 with st.sidebar:
     st.title("📂 Upload & Settings")
     uploaded_file = st.file_uploader("Upload your document (.pdf or .txt)", type=["pdf", "txt"])
+    st.markdown("---")
+    st.subheader("⚙️ Model Settings")
+    # Example model settings
+    model_options = ["gemini-pro", "gemini-1.5", "gemini-ultra"]
+    selected_model = st.selectbox("Select Gemini Model", model_options, index=0)
+    temperature = st.slider("Temperature", 0.0, 1.0, 0.2, 0.05)
+    max_tokens = st.number_input("Max Tokens", min_value=64, max_value=4096, value=512, step=32)
     st.markdown("---")
     st.subheader("ℹ️ About")
     st.info(
         "AI Doc Assistant lets you chat with your documents using Gemini LLM.\n\n"
         "Upload a PDF or TXT file and ask questions about its content."
     )
-    # Optional: Add model settings here
+
+# Save model settings in session state
+st.session_state["model_settings"] = {
+    "model": selected_model,
+    "temperature": temperature,
+    "max_tokens": max_tokens
+}
 
 # --- MAIN CHAT INTERFACE ---
 st.markdown(
@@ -42,12 +61,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-UPLOAD_DIR = "data/uploads"
-INDEX_DIR = "data/indexes"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-os.makedirs(INDEX_DIR, exist_ok=True)
-
-# Session State Setup
+# --- Session State Setup ---
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "session_id" not in st.session_state:
@@ -57,7 +71,7 @@ if "vectorstore" not in st.session_state:
 if "retriever" not in st.session_state:
     st.session_state.retriever = None
 
-# Handle file upload and processing
+# --- Handle file upload and processing ---
 if uploaded_file:
     file_path = os.path.join(UPLOAD_DIR, uploaded_file.name)
     with open(file_path, "wb") as f:
@@ -104,7 +118,14 @@ if submitted and user_input and st.session_state.retriever:
             docs = st.session_state.retriever.get_relevant_documents(query)
             context = "\n".join([doc.page_content for doc in docs])
             prompt = f"Use the following context to answer the question:\n\n{context}\n\nQuestion: {query}"
-            return generate_gemini_response(prompt)
+            # Pass model settings to your LLM function if supported
+            settings = st.session_state["model_settings"]
+            return generate_gemini_response(
+                prompt,
+                model=settings["model"],
+                temperature=settings["temperature"],
+                max_tokens=settings["max_tokens"]
+            )
         answer = answer_query(user_input)
         st.session_state.chat_history.append((user_input, answer))
         render_chat()
