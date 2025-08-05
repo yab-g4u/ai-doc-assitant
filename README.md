@@ -15,14 +15,17 @@ We used **Langchain**, **Streamlit**, and **FAISS** to build a simple app where 
 ---
 🔗 **Check it out live:** [Open App on Streamlit](https://ai-doc-assitant.streamlit.app/ )
 
-## 🎯 Objectives of the Task
+## 💡 Project Objective
 
-build an ai assistant that:
--lets a user upload a document(PDF,TXT,etc)
--lets the user ask questions about it in a chat interface 
--uses langchain + embeddings + LLMs to retrieve relevant chunks 
--keeps a short term memory of the conversation 
--optionally:save chat history by session ID 
+Build an AI Assistant that:
+
+- 📄 Lets a user **upload a document** (PDF, TXT, etc.)
+- 💬 Provides a **chat interface** where the user can ask questions about the uploaded document
+- 🧠 Uses **LangChain**, **embeddings**, and **LLMs** to retrieve and respond with relevant document chunks
+- 🔁 Maintains **short-term memory** of the conversation for more coherent interactions
+- 💾 Optionally, includes functionality to **save chat history** based on session ID
+
+
 
 
 ---
