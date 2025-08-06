@@ -110,7 +110,7 @@ render_chat()
 with st.form(key="chat_form", clear_on_submit=True):
     user_input = st.text_input("Your question:", placeholder="Type your question and press Enter...", label_visibility="collapsed")
     submitted = st.form_submit_button("Send", use_container_width=True)
-
+GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 # --- HANDLE USER INPUT ---
 if submitted and user_input and st.session_state.retriever:
     with st.spinner("🤖 Thinking..."):
