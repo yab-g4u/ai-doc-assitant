@@ -9,9 +9,13 @@ from src.memory import create_memory
 from src.gemini_llm import generate_gemini_response
 
 from langchain_community.vectorstores import FAISS
+from langchain_core.documents import Document
 import logging
 logging.basicConfig(level=logging.INFO)
 logging.info("App starting..") 
+
+from PyPDF2 import PdfReader
+import docx
 
 st.set_page_config(page_title="AI Doc Assistant", layout="wide", initial_sidebar_state="expanded")
 GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
@@ -22,15 +26,34 @@ INDEX_DIR = "data/indexes"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(INDEX_DIR, exist_ok=True)
 
+# --- File Readers ---
+def read_pdf(file_path):
+    reader = PdfReader(file_path)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text() or ""
+    return text
+
+def read_txt(file_path):
+    with open(file_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+def read_docx(file_path):
+    doc = docx.Document(file_path)
+    return "\n".join([para.text for para in doc.paragraphs])
+
 # --- SIDEBAR ---
 with st.sidebar:
     st.title("📂 Upload & Settings")
-    uploaded_file = st.file_uploader("Upload your document (.pdf or .txt)", type=["pdf", "txt"])
+    uploaded_file = st.file_uploader(
+        "Upload your document (.pdf, .txt, .docx)",
+        type=["pdf", "txt", "docx"]
+    )
     st.markdown("---")
     st.subheader("ℹ️ About")
     st.info(
         "AI Doc Assistant lets you chat with your documents using Gemini LLM.\n\n"
-        "Upload a PDF or TXT file and ask questions about its content."
+        "Upload a PDF, TXT, or DOCX file and ask questions about its content."
     )
 
 # --- MAIN CHAT INTERFACE ---
@@ -65,11 +88,21 @@ if uploaded_file:
     st.sidebar.success("✅ File uploaded successfully.")
 
     with st.spinner("Processing document..."):
-        docs = load_document(file_path)
-        chunks = split_documents(docs)
-        if not chunks:
+        ext = uploaded_file.name.lower().split(".")[-1]
+        if ext == "pdf":
+            content = read_pdf(file_path)
+        elif ext == "txt":
+            content = read_txt(file_path)
+        elif ext == "docx":
+            content = read_docx(file_path)
+        else:
+            content = None
+
+        if not content or not content.strip():
             st.error("❌ The document could not be processed or is empty. Please try another file.")
         else:
+            docs = [Document(page_content=content)]
+            chunks = split_documents(docs)
             index_path = os.path.join(INDEX_DIR, st.session_state.session_id)
             vectorstore = store_embeddings(chunks, index_path)
             retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
