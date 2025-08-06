@@ -4,3 +4,4 @@ langchain-community
 sentence-transformers
 faiss-cpu
 PyPDF2
+python-docx
